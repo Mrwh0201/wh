@@ -8,10 +8,10 @@
 
 <script>
 import Login from './components/login/Login'
-import Nav from './components/Nav'
-import Foot from './components/Foot'
+import Nav from './components/login/Nav'
+import Foot from './components/login/Foot'
 export default {
-  name: 'InputFile',
+  name: 'Login',
   components: { Nav, Login, Foot }
 }
 </script>
@@ -23,5 +23,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  /* margin-top: 60px; */
 }
 </style>

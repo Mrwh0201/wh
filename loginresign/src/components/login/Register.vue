@@ -37,11 +37,12 @@
         </el-form-item>
         <el-form :model="formRes" :rules="rules" ref="formRes" class="ruleForm1">
           <el-form-item>
+            <!--<router-link to="/Login"><el-button type="primary" @click="submitForm(formRes)">注册并提交申请</el-button></router-link>-->
             <el-button type="primary" class="res-button" @click="submitForm(formRes)">注册并提交申请</el-button>
           </el-form-item>
           <el-form-item>
             <span>已有账号？</span>
-            <router-link to="/Login"><el-button type="text">立即登录</el-button></router-link>
+            <router-link to="/"><el-button type="text">立即登录</el-button></router-link>
           </el-form-item>
         </el-form>
       </el-form>
@@ -50,13 +51,14 @@
 </template>
 
 <script>
-import axios from "axios";
-import ElementUI from 'element-ui'
+import axios from 'axios'
+
 var params = new URLSearchParams()
 var reg = /^1[3|4|5|7|8][0-9]\d{8}$/
+// use(ElementUI)
 export default {
-  name: "Register",
-  data() {
+  name: 'Register',
+  data () {
     var validatePass = (rule, value, callback) => {
       if (value === '') {
         callback(new Error('请输入密码'));
@@ -77,42 +79,42 @@ export default {
       }
     };
     var validatePhone = (rule, value, callback) => {
-      if(value === '') {
+      if (value === '') {
         callback(new Error('请输入手机号码'));
       } else if (!reg.test(value)) {
         callback(new Error('请输入正确的11位手机号码'));
-      } else{
+      } else {
         callback();
       }
     }
     return {
       formRes: {
-        name: "",
-        realname: "",
-        phone: "",
-        password: "",
-        checkPass: "",
-        region: ""
+        name: '',
+        realname: '',
+        phone: '',
+        password: '',
+        checkPass: '',
+        region: ''
       },
       rules: {
         name: [
-          { required: true, message: "请输入登录名", trigger: "blur" },
+          { required: true, message: '请输入登录名', trigger: 'blur' }
           // { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" }
         ],
         realname: [
-          { required: true, message: "请输入真实姓名", trigger: "blur" },
+          { required: true, message: '请输入真实姓名', trigger: 'blur' }
           // { min: 4, message: "请输入真实姓名", trigger: "blur" }
         ],
         phone: [
           {
             required: true,
-            // message:'请输入手机号码',
-            validator: validatePhone,
-            trigger: "blur"
+            message: '请输入手机号码',
+            // validator: validatePhone,
+            trigger: 'blur'
           }
         ],
         password: [
-          { validator: validatePass, required:true, trigger: 'blur' }
+          { validator: validatePass, required: true, trigger: 'blur' }
         ],
         checkPass: [
           { validator: validatePass2, required: true, trigger: 'blur' }
@@ -126,19 +128,18 @@ export default {
   methods: {
     submitForm( formRes ) {
       this.$refs['formRes'].validate((valid) => {
-      if ( valid ) {
+        if ( valid ) {
           console.log( 'submit!' );
           params = formRes;
           console.log( params );
-          axios.post( "/register", params)
+          axios.post( '/register', params)
             .then(( res ) => {
               console.log(res.data);
-              if( res.data.code === 0 ){
+              if ( res.data.code === 0 ) {
                 this.$message({
-                  message:'您的注册信息已经提交给超级管理员，请等待！',
+                  message: '您的注册信息已经提交给超级管理员，请等待！',
                   type: 'success'
                 })
-
                 window.history.back();
                 this.$refs['formRes'].resetFields();
               } else {
@@ -158,7 +159,6 @@ export default {
           return false;
         }
       });
-
     }
   }
 };
@@ -173,10 +173,12 @@ export default {
   padding: 0;
 }
 .conRes {
+  /*width: 447px;*/
   width:20%;
   height: 421px;
   float: right;
   padding-top: 200px;
+  /*margin-right: 307px;*/
   margin-right:18%;
 }
 .conRes h1 {
@@ -196,6 +198,7 @@ export default {
 }
   .ruleForm1{
     background: #fff;
+    /*width:447px;*/
     width:100%;
     padding: 10px 20px;
     margin-left:-20px;
@@ -204,6 +207,7 @@ export default {
     margin-top:-10px;
   }
  .el-form-item{
+    /*margin-bottom:10px;*/
    height:30px;
   }
  .res-button{

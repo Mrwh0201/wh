@@ -31,13 +31,15 @@
           <el-button type="primary" class="login_button" @click="submitForm(formLogin)">登录</el-button>
         </el-form-item>
         <el-form-item>
-          <el-checkbox class="remember" v-model="formLogin.checked" id="remember-password" label="记住账号密码" name="checked"></el-checkbox>
+          <el-checkbox-group v-model="formLogin.type">
+            <el-checkbox class="remember" id="remember-password" label="记住账号密码" name="type"></el-checkbox>
+          </el-checkbox-group>
           <!-- <a href="#" class="forget" target="_black">忘记密码？</a> -->
           <router-link to="/Register"><el-button type="text" class="register">注册</el-button></router-link>
         </el-form-item>
         <!--<el-form-item>-->
-        <!--<span>没有账号？</span>-->
-        <!--<router-link to="/Register"><el-button type="text">立即注册</el-button></router-link>-->
+          <!--<span>没有账号？</span>-->
+          <!--<router-link to="/Register"><el-button type="text">立即注册</el-button></router-link>-->
         <!--</el-form-item>-->
       </el-form>
     </div>
@@ -50,8 +52,14 @@ import ElementUI from "element-ui";
 
 var params = new URLSearchParams();
 
+var SetCookie = function(username, password) {
+  let Then = new Date();
+  Then.setTime(Then.getTime() + 1866240000000);
+  document.cookie = "username=" + username + "%%" + password + ";expires=" + Then.toGMTString();
+};
+
 export default {
-  name: "Login1",
+  name: "Login",
   data() {
     var validateUser = (rule, value, callback) => {
       if (value === '') {
@@ -68,11 +76,37 @@ export default {
       }
     };
 
+    // var GetCookie = function(){
+    //   var nmpsd; var nm; var psd;
+    //   var cookieString = new String(document.cookie);
+    //   var cookieHeader = 'userName=';
+    //   var beginPosition = cookieString.indexOf(cookieHeader);
+    //   cookieString = cookieString.substring(beginPosition);
+    //   var ends = cookieString.index(";");
+    //   if (ends !== -1) {
+    //     cookieString = cookieString.substring(0,ends);
+    //   }
+    //   if (beginPosition > -1) {
+    //     nmpsd = cookieString.substring(cookieHeader.length);
+    //     if (nmpsd !== '') {
+    //       beginPosition = nmpsd.indexOf('%%');
+    //       nm = nmpsd.substring(0, beginPosition);
+    //       psd = nmpsd.substring(beginPosition+2);
+    //       document.getElementById("username").value = nm;
+    //       docuemnt.getElementsById("password").value = psd;
+    //       if ( nm !== "" && psd !== "") {
+    //         document.getElementById('remember-password').checked = true;
+    //       }
+    //
+    //     }
+    //   }
+    // }
+
     return {
       formLogin: {
         name: "",
         password: "",
-        checked: false
+        type: false
       },
       rules: {
         name: [
@@ -83,11 +117,6 @@ export default {
         ]
       }
     };
-  },
-  //页面加载调用获取cookie值
-  mounted() {
-    this.getCookie();
-    // this.clearCookie();
   },
   methods: {
     submitForm( formLogin ) {
@@ -102,17 +131,12 @@ export default {
                 message: '登录成功！',
                 type: 'success'
               });
-              window.location.href = "/#/Index";
-              const self = this;
-              if ( self.formLogin.checked === true ) {
-                console.log("checked === true");
-                // 传入账号名，密码和保存天数3个参数
-                self.setCookie(self.formLogin.name,self.formLogin.password,7);
-              } else {
-                console.log('清空cookie');
-                // 清空cookie
-                self.clearCookie();
-              }
+              // if(params.type) {
+              //   SetCookie(params.name, params.password);
+              // } else {
+              //   SetCookie( "" , "" )
+              // }
+              // window.location.href = "http://www.baidu.com";
             } else {
               this.$message.error(res.data.msg);
             }
@@ -131,36 +155,7 @@ export default {
         }
       })
     },
-    // 设置cookie
-    setCookie( c_name, c_pwd, exdays) {
-      var exdate = new Date(); // 获取时间
-      exdate.setTime(exdate.getTime() + 24 * 60 * 60 * 1000 * exdays); // 保存的天数
-      // 字符串拼接cookie
-      window.document.cookie = 'userName' + '=' + c_name + ';path=/;expires=' + exdate.toGMTString().replace(/(\s*$)/g, "");
-      window.document.cookie = 'userPwd' + '=' + c_pwd + ';path=/;expires=' + exdate.toGMTString();
-    },
-    // 获取cookie
-    getCookie: function() {
-      if ( document.cookie.length > 0 ) {
-        this.formLogin.checked = true;
-        var arr = document.cookie.split(';');// 显示的格式切割
-        for ( var i = 0; i<arr.length; i++) {
-          var arr2 = arr[i].split("="); //再次切割
-          // 判断查找相对应的值
-          console.log(arr2);
-          if( arr2[0] === "userName" ) {
-            this.formLogin.name = arr2[1]; //保存到保存数据的地方
-            // } else if ( arr2[0] === "userPwd" ) {
-          } else {
-            this.formLogin.password  = arr2[1];
-          }
-        }
-      }
-    },
-    // 清除cookie
-    clearCookie: function() {
-      this.setCookie("", "", -1); //修改两值都为空，天数为负一天就好
-    }
+
   }
 };
 // var userText = document.getElementById('username'); //重构表单
@@ -168,65 +163,65 @@ export default {
 </script>
 
 <style>
-  a{
-    text-decoration: none;
-  }
-  a:hover{
-    text-decoration: blue;
-  }
-  .contains {
-    width: 100%;
-    height: 815px;
-    background: url('../../../static/images/login_bg.jpg');
-    margin:0;
-    padding:0;
-  }
-  .conLog {
-    /*width: 396px;*/
-    width:20%;
-    height: 352px;
-    float: right;
-    padding-top: 288px;
-    /*margin-right: 308px;*/
-    margin-right:18%;
-  }
-  .conLog h1 {
-    font-size: 26px;
-  }
-  .conLog .login_button{
-    font-size:16px;
-    /*height:35px;*/
-    /*width:302px;*/
-    width:100%;
-    border-radius:20px;
-  }
-  .formLogin{
-    background: #fff;
-    padding: 10px 20px;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-  }
-  .el-input{
-    height:37px;
-  }
-  .formLogin .remember{
-    float: left;
-  }
-  .formLogin .register {
-    float: right;
-  }
-  #username {
-    background:url("../../../static/images/uncheckuser.png") no-repeat 5px 5px;
-    padding-left:25px;
-    font-size:14px;
-    height:30px;
-  }
-  #password {
-    background:url("../../../static/images/uncheckpass.png") no-repeat 5px 5px;
-    padding-left:25px;
-    font-size:14px;
-    height:30px;
-  }
+a{
+  text-decoration: none;
+}
+a:hover{
+  text-decoration: blue;
+}
+.contains {
+  width: 100%;
+  height: 815px;
+  background: url('../../../static/images/login_bg.jpg');
+  margin:0;
+  padding:0;
+}
+.conLog {
+  /*width: 396px;*/
+  width:20%;
+  height: 352px;
+  float: right;
+  padding-top: 288px;
+  /*margin-right: 308px;*/
+  margin-right:18%;
+}
+.conLog h1 {
+  font-size: 26px;
+}
+.conLog .login_button{
+  font-size:16px;
+  /*height:35px;*/
+  /*width:302px;*/
+  width:100%;
+  border-radius:20px;
+}
+.formLogin{
+  background: #fff;
+  padding: 10px 20px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+.el-input{
+  height:37px;
+}
+.formLogin .remember{
+  float: left;
+}
+.formLogin .register {
+  float: right;
+}
+#username {
+  background:url("../../../static/images/uncheckuser.png") no-repeat 5px 5px;
+  padding-left:25px;
+  font-size:14px;
+  height:30px;
+}
+#password {
+  background:url("../../../static/images/uncheckpass.png") no-repeat 5px 5px;
+  padding-left:25px;
+  font-size:14px;
+  height:30px;
+}
 
 </style>
