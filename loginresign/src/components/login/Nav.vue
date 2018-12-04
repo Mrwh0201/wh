@@ -5,11 +5,12 @@
 </template>
 
 <script>
+// import imgUrl from "../assets/logo.png"
 export default {
     name:"Nav",
     data(){
         return{
-            imgUrl:require('../assets/logo.png')
+            imgUrl:require('../../assets/logo.png')
         }
     }
 }
@@ -18,6 +19,7 @@ export default {
 <style>
 .nav{
     width:100%;
+    /* height:68px; */
     position: relative;
     text-align: left;
 }
